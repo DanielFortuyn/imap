@@ -290,12 +290,18 @@ class Message extends Message\Part
     }
 
     /**
+     * Flag the email as unseen
      *
+     * @throws MessageUnseenException
+     * @return $message;
      */
     public function setUnseen() {
         if(!imap_clearflag_full($this->stream, $this->messageNumber, "\\Seen")) {
             throw new MessageUnseenException($this->messageNumber, $this->stream);
         }
+        //Invalidate current headers
+        $this->headers = null;
+        return $this;
     }
 
     /**
