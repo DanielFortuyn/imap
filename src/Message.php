@@ -3,6 +3,7 @@
 namespace Ddeboer\Imap;
 
 use Ddeboer\Imap\Exception\MessageDoesNotExistException;
+use Ddeboer\Imap\Exception\MessageUnseenException;
 use Ddeboer\Imap\Message\EmailAddress;
 use Ddeboer\Imap\Exception\MessageDeleteException;
 use Ddeboer\Imap\Exception\MessageMoveException;
@@ -286,6 +287,15 @@ class Message extends Message\Part
         }
 
         return $this;
+    }
+
+    /**
+     *
+     */
+    public function setUnseen() {
+        if(!imap_clearflag_full($this->stream, $this->messageNumber, "\\Seen")) {
+            throw new MessageUnseenException($this->messageNumber, $this->stream);
+        }
     }
 
     /**
